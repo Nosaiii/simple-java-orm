@@ -4,7 +4,7 @@ public class ModelMetadata {
     private final String table;
     private final String[] primaryKeyFields;
 
-    public ModelMetadata(String table, String[] primaryKeyFields) {
+    public ModelMetadata(String table, String... primaryKeyFields) {
         this.table = table;
         this.primaryKeyFields = primaryKeyFields;
     }
