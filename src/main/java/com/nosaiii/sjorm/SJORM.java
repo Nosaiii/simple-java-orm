@@ -31,8 +31,8 @@ public class SJORM {
         metadatas = new HashMap<>();
     }
 
-    public <T extends Model, V extends ModelMetadata> void registerModel(Class<T> modelClass, V metadata) {
-        metadatas.put(modelClass, metadata);
+    public void registerModel(ModelMetadata metadata) {
+        metadatas.put(metadata.getType(), metadata);
     }
 
     public <T extends Model> Query<T> getAll(Class<T> modelClass) throws ModelMetadataNotRegisteredException {
