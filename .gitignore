@@ -119,6 +119,8 @@ dist/
 .idea/**/dbnavigator.xml
 
 # Gradle
+gradle/
+.gradle/
 .idea/**/gradle.xml
 .idea/**/libraries
 
