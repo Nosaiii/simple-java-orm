@@ -10,7 +10,7 @@ public abstract class Model {
     private final HashMap<String, Object> properties;
     private final ModelMetadata metadata;
 
-    Model(ResultSet resultSet) throws ModelMetadataNotRegisteredException {
+    protected Model(ResultSet resultSet) throws ModelMetadataNotRegisteredException {
         properties = new HashMap<>();
         metadata = SJORM.getInstance().getMetadata(getClass());
 

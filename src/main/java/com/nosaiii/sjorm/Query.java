@@ -3,6 +3,9 @@ package main.java.com.nosaiii.sjorm;
 import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
 import main.java.com.nosaiii.sjorm.exceptions.NoSuchPropertyException;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -16,18 +19,15 @@ public class Query<T extends Model> {
 
         try {
             while (resultSet.next()) {
-                Model model = null;
-                try {
-                    model = modelClass.newInstance();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                Constructor<T> modelConstructor = modelClass.getConstructor(ResultSet.class);
+                Model model = modelConstructor.newInstance(resultSet);
+
                 //noinspection unchecked
                 collection.add((T) model);
             }
-        } catch(InstantiationException e) {
+        } catch(NoSuchMethodException e) {
             throw new NoParameterlessConstructorException(modelClass);
-        } catch (SQLException e) {
+        } catch (SQLException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
@@ -261,9 +261,13 @@ public class Query<T extends Model> {
         return cloned;
     }
 
-    public T[] toArray() {
+    public T[] toArray(Class<T> type) {
         //noinspection unchecked
-        return (T[]) collection.toArray(new Model[0]);
+        T[] array = (T[]) Array.newInstance(type, collection.size());
+        for(int i = 0; i < array.length; i++) {
+            Array.set(array, i, collection.get(i));
+        }
+        return array;
     }
 
     public List<T> toList() {
