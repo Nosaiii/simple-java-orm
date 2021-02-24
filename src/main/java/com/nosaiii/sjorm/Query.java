@@ -1,7 +1,6 @@
 package main.java.com.nosaiii.sjorm;
 
 import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
-import main.java.com.nosaiii.sjorm.exceptions.NoSuchPropertyException;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -115,13 +114,8 @@ public class Query<T extends Model> {
         Map<V, Query<T>> groupedMap = new HashMap<>();
 
         for (T m : collection) {
-            V propertyValue = null;
-            try {
-                //noinspection unchecked
-                propertyValue = (V) m.getProperty(propertyName);
-            } catch (NoSuchPropertyException e) {
-                e.printStackTrace();
-            }
+            //noinspection unchecked
+            V propertyValue = (V) m.getProperty(propertyName);
 
             Query<T> query = new Query<>(this);
             if (groupedMap.containsKey(propertyValue)) {
@@ -139,22 +133,16 @@ public class Query<T extends Model> {
         Query<T> cloned = clone();
 
         cloned.collection.sort((o1, o2) -> {
-            try {
-                Object property1 = o1.getProperty(propertyName), property2 = o2.getProperty(propertyName);
+            Object property1 = o1.getProperty(propertyName), property2 = o2.getProperty(propertyName);
 
-                if (!(property1 instanceof Comparable) || !(property2 instanceof Comparable)) {
-                    throw new IllegalArgumentException("Given properties can not be compared");
-                }
-
-                @SuppressWarnings("unchecked")
-                Comparable<V> propertyComparable = (Comparable<V>) property1;
-                //noinspection unchecked
-                return propertyComparable.compareTo((V) property2);
-            } catch(NoSuchPropertyException e) {
-                e.printStackTrace();
+            if (!(property1 instanceof Comparable) || !(property2 instanceof Comparable)) {
+                throw new IllegalArgumentException("Given properties can not be compared");
             }
 
-            return 0;
+            @SuppressWarnings("unchecked")
+            Comparable<V> propertyComparable = (Comparable<V>) property1;
+            //noinspection unchecked
+            return propertyComparable.compareTo((V) property2);
         });
 
         return cloned;
@@ -183,14 +171,10 @@ public class Query<T extends Model> {
         double highest = Double.MIN_VALUE;
 
         for(T m : collection) {
-            try {
-                double propertyValue = m.getProperty(propertyName, double.class);
+            double propertyValue = m.getProperty(propertyName, double.class);
 
-                if(propertyValue > highest) {
-                    highest = propertyValue;
-                }
-            } catch(NoSuchPropertyException e) {
-                e.printStackTrace();
+            if(propertyValue > highest) {
+                highest = propertyValue;
             }
         }
 
@@ -205,14 +189,10 @@ public class Query<T extends Model> {
         double lowest = Double.MAX_VALUE;
 
         for(T m : collection) {
-            try {
-                double propertyValue = m.getProperty(propertyName, double.class);
+            double propertyValue = m.getProperty(propertyName, double.class);
 
-                if(propertyValue < lowest) {
-                    lowest = propertyValue;
-                }
-            } catch(NoSuchPropertyException e) {
-                e.printStackTrace();
+            if(propertyValue < lowest) {
+                lowest = propertyValue;
             }
         }
 
@@ -223,12 +203,8 @@ public class Query<T extends Model> {
         List<S> list = new ArrayList<>();
 
         for(T m : collection) {
-            try {
-                //noinspection unchecked
-                list.add((S) m.getProperty(propertyName));
-            } catch (NoSuchPropertyException e) {
-                e.printStackTrace();
-            }
+            //noinspection unchecked
+            list.add((S) m.getProperty(propertyName));
         }
 
         return list;
@@ -238,12 +214,8 @@ public class Query<T extends Model> {
         double sum = 0;
 
         for(T m : collection) {
-            try {
-                double propertyValue = m.getProperty(propertyName, double.class);
-                sum += propertyValue;
-            } catch(NoSuchPropertyException e) {
-                e.printStackTrace();
-            }
+            double propertyValue = m.getProperty(propertyName, double.class);
+            sum += propertyValue;
         }
 
         return sum;
