@@ -1,0 +1,9 @@
+# Default ignored files
+/shelf/
+/inspectionProfiles/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../:\IdeaProjects\simple-java-orm\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
