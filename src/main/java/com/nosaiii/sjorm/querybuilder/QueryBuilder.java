@@ -53,6 +53,11 @@ public class QueryBuilder {
         return statement;
     }
 
+    public QueryBuilder sql(String sql) {
+        builder.append(sql);
+        return this;
+    }
+
     public QueryBuilder select(String... columns) {
         builder.append("SELECT ");
 
