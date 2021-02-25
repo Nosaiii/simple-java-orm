@@ -1,6 +1,6 @@
 package main.java.com.nosaiii.sjorm.querybuilder.condition;
 
-import main.java.com.nosaiii.sjorm.utility.SqlUtility;
+import main.java.com.nosaiii.sjorm.utility.SQLUtility;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +17,7 @@ public class SQLInCondition implements SQLCondition {
     @Override
     public String build() {
         StringBuilder builder = new StringBuilder();
-        builder.append(SqlUtility.quote(field)).append(" IN ");
+        builder.append(SQLUtility.quote(field)).append(" IN ");
         builder.append("(");
 
         String[] parameterCharacters = new String[list.size()];

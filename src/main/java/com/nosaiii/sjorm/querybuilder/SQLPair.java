@@ -9,10 +9,18 @@ public class SQLPair {
         this.value = value;
     }
 
+    /**
+     * The field of the pair
+     * @return The field of the pair
+     */
     public String getField() {
         return field;
     }
 
+    /**
+     * The value of the pair
+     * @return The value of the pair
+     */
     public Object getValue() {
         return value;
     }

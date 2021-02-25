@@ -1,7 +1,7 @@
 package main.java.com.nosaiii.sjorm.querybuilder;
 
 import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLCondition;
-import main.java.com.nosaiii.sjorm.utility.SqlUtility;
+import main.java.com.nosaiii.sjorm.utility.SQLUtility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,7 +59,7 @@ public class QueryBuilder {
         if (columns.length == 0) {
             builder.append("*");
         } else {
-            builder.append(SqlUtility.quote(Arrays.asList(columns)));
+            builder.append(SQLUtility.quote(Arrays.asList(columns)));
         }
         builder.append(" ");
 
@@ -67,7 +67,7 @@ public class QueryBuilder {
     }
 
     public QueryBuilder from(String table) {
-        builder.append("FROM ").append(SqlUtility.quote(table)).append(" ");
+        builder.append("FROM ").append(SQLUtility.quote(table)).append(" ");
         return this;
     }
 
@@ -91,7 +91,7 @@ public class QueryBuilder {
 
     public QueryBuilder join(SQLJoin sqlJoin, final String targetTable, SQLCondition condition) {
         builder.append(" ").append(sqlJoin.getString()).append(" ");
-        builder.append(SqlUtility.quote(targetTable));
+        builder.append(SQLUtility.quote(targetTable));
         builder.append(" ON ");
         builder.append(condition.build());
 
@@ -101,10 +101,10 @@ public class QueryBuilder {
     }
 
     public QueryBuilder orderBy(String column, String... columns) {
-        builder.append("ORDER BY ").append(SqlUtility.quote(column)).append(" ");
+        builder.append("ORDER BY ").append(SQLUtility.quote(column)).append(" ");
 
         if (columns.length > 0) {
-            builder.append(SqlUtility.quote(Arrays.asList(columns)));
+            builder.append(SQLUtility.quote(Arrays.asList(columns)));
         }
         builder.append(" ");
 
@@ -112,10 +112,10 @@ public class QueryBuilder {
     }
 
     public QueryBuilder groupBy(String column, String... columns) {
-        builder.append("GROUP BY ").append(SqlUtility.quote(column)).append(" ");
+        builder.append("GROUP BY ").append(SQLUtility.quote(column)).append(" ");
 
         if (columns.length > 0) {
-            builder.append(SqlUtility.quote(Arrays.asList(columns)));
+            builder.append(SQLUtility.quote(Arrays.asList(columns)));
         }
         builder.append(" ");
 
@@ -132,10 +132,10 @@ public class QueryBuilder {
     }
 
     public QueryBuilder insertInto(String table, String... columns) {
-        builder.append("INSERT INTO ").append(SqlUtility.quote(table));
+        builder.append("INSERT INTO ").append(SQLUtility.quote(table));
 
         if(columns.length > 0) {
-            builder.append("(").append(SqlUtility.quote(Arrays.asList(columns))).append(")");
+            builder.append("(").append(SQLUtility.quote(Arrays.asList(columns))).append(")");
         }
 
         builder.append(" ");
@@ -174,11 +174,11 @@ public class QueryBuilder {
     }
 
     public QueryBuilder update(String table, SQLPair... pairs) {
-        builder.append("UPDATE ").append(SqlUtility.quote(table)).append(" SET ");
+        builder.append("UPDATE ").append(SQLUtility.quote(table)).append(" SET ");
 
         List<String> setStatements = new ArrayList<>();
         for(SQLPair pair : pairs) {
-            setStatements.add(SqlUtility.quote(pair.getField()) + " = ?");
+            setStatements.add(SQLUtility.quote(pair.getField()) + " = ?");
         }
         builder.append(String.join(", ", setStatements));
 

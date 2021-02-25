@@ -17,6 +17,11 @@ public abstract class Model {
 
     private final LinkedHashMap<String, Object> cachedPrimaryKeyValues;
 
+    /**
+     * Constructor on retrieving an existing model from the database
+     * @param resultSet The {@link ResultSet} object containing the data from the databse of this model
+     * @throws ModelMetadataNotRegisteredException Thrown when a new instance was attempted to be made when not bound to the SJORM service
+     */
     protected Model(ResultSet resultSet) throws ModelMetadataNotRegisteredException {
         properties = new LinkedHashMap<>();
         metadata = SJORM.getInstance().getMetadata(getClass());
@@ -32,13 +37,21 @@ public abstract class Model {
                 String columnName = resultSetMetaData.getColumnName(i);
                 Object columnValue = resultSet.getObject(i);
 
-                populateProperty(columnName, columnValue);
+                properties.put(columnName, columnValue);
+
+                if(Arrays.asList(metadata.getPrimaryKeyFields()).contains(columnName)) {
+                    cachedPrimaryKeyValues.put(columnName, columnValue);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Constructor on creating a new non-existing instance of this model to be saved in the database
+     * @throws ModelMetadataNotRegisteredException Thrown when a new instance was attempted to be made when not bound to the SJORM service
+     */
     public Model() throws ModelMetadataNotRegisteredException {
         properties = new LinkedHashMap<>();
         metadata = SJORM.getInstance().getMetadata(getClass());
@@ -48,14 +61,9 @@ public abstract class Model {
         cachedPrimaryKeyValues = new LinkedHashMap<>();
     }
 
-    private void populateProperty(String name, Object value) {
-        properties.put(name, value);
-
-        if(Arrays.asList(metadata.getPrimaryKeyFields()).contains(name)) {
-            cachedPrimaryKeyValues.put(name, value);
-        }
-    }
-
+    /**
+     * Saves the model to the database
+     */
     public void save() {
         Connection connection = SJORM.getInstance().getSJORMConnection().getConnection();
 
@@ -92,14 +100,31 @@ public abstract class Model {
         isNew = false;
     }
 
+    /**
+     * Sets a property of the model. The name of the property must be existing in the database.
+     * @param column The name of the property (or column in the database)
+     * @param value The value to give to the property
+     */
     public void setProperty(String column, Object value) {
         properties.put(column, value);
     }
 
+    /**
+     * Gets the value of a property of the model, given by the name of the property
+     * @param column The name of the property (or column in the database)
+     * @return The value of a property of the model, given by the name of the property
+     */
     public Object getProperty(String column) {
         return properties.get(column);
     }
 
+    /**
+     * Gets the value of a property of the model, given by the name of the property and casts it into the desired type
+     * @param column The name of the property (or column in the database)
+     * @param clazz The class of the type to attempt to cast the property to
+     * @param <T> The type to attempt to cast the property to
+     * @return The value of a property of the model, given by the name of the property and casts it into the desired type
+     */
     public <T> T getProperty(String column, Class<T> clazz) {
         return clazz.cast(getProperty(column));
     }

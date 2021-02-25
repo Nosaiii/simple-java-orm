@@ -1,7 +1,7 @@
 package main.java.com.nosaiii.sjorm.querybuilder.condition;
 
 import main.java.com.nosaiii.sjorm.querybuilder.SQLPair;
-import main.java.com.nosaiii.sjorm.utility.SqlUtility;
+import main.java.com.nosaiii.sjorm.utility.SQLUtility;
 
 public class SQLBasicCondition implements SQLCondition {
     private final SQLPair pair;
@@ -27,7 +27,7 @@ public class SQLBasicCondition implements SQLCondition {
             case LIKE: conditionalCharacters = "LIKE"; break;
         }
 
-        return SqlUtility.quote(pair.getField()) + " " + conditionalCharacters + " ?";
+        return SQLUtility.quote(pair.getField()) + " " + conditionalCharacters + " ?";
     }
 
     @Override

@@ -1,12 +1,11 @@
 package main.java.com.nosaiii.sjorm;
 
-import main.java.com.nosaiii.sjorm.utility.SqlUtility;
+import main.java.com.nosaiii.sjorm.utility.SQLUtility;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SJORMConnection {
     private String host;
@@ -32,8 +31,14 @@ public class SJORMConnection {
         }
     }
 
-    private List<HashMap<String, Object>> query(String sql, Object... params) {
-        List<HashMap<String, Object>> result = new ArrayList<>();
+    /**
+     * Execute plain SQL result-giving queries to the database
+     * @param sql The SQL query to execute
+     * @param params (Optional) parameters to be used by the query, replacing '?' properties
+     * @return A {@link List} of {@link LinkedHashMap} objects containing data from the executed query result
+     */
+    private List<LinkedHashMap<String, Object>> query(String sql, Object... params) {
+        List<LinkedHashMap<String, Object>> result = new ArrayList<>();
 
         try(PreparedStatement statement = connection.prepareStatement(sql)) {
             for(int i = 1; i <= params.length; i++) {
@@ -44,7 +49,7 @@ public class SJORMConnection {
             ResultSetMetaData metaData = resultSet.getMetaData();
 
             while(resultSet.next()) {
-                HashMap<String, Object> row = new HashMap<>();
+                LinkedHashMap<String, Object> row = new LinkedHashMap<>();
 
                 for(int i = 1; i <= metaData.getColumnCount(); i++) {
                     String columnName = metaData.getColumnName(i);
@@ -62,31 +67,56 @@ public class SJORMConnection {
         return result;
     }
 
+    /**
+     * Gets the names of the column from the given table in the database that are present as a primary key field
+     * @param table The name of the table in the database
+     * @return An array of column names that are primary key fields in the given table of the database
+     */
     public String[] getPrimaryKeys(String table) {
-        String query = "DESCRIBE " + SqlUtility.quote(table);
-        List<HashMap<String, Object>> results = query(query);
+        String query = "DESCRIBE " + SQLUtility.quote(table);
+        List<LinkedHashMap<String, Object>> results = query(query);
 
         return results.stream()
                 .filter(row -> row.get("Key").equals("PRI"))
                 .map(row -> row.get("Field")).toArray(String[]::new);
     }
 
+    /**
+     * The address of the database server
+     * @return The address of the database server
+     */
     public String getHost() {
         return host;
     }
 
+    /**
+     * The port of the database server
+     * @return The port of the database server
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     * The name of the database
+     * @return The name of the database
+     */
     public String getDatabase() {
         return database;
     }
 
+    /**
+     * The username of the login to connect to the database server
+     * @return The username of the login to connect to the database server
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * The SQL connection used to execute queries on
+     * @return The {@link Connection} object used to execute queries on
+     */
     public Connection getConnection() {
         return connection;
     }
