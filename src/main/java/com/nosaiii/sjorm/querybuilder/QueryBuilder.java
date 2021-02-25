@@ -23,6 +23,10 @@ public class QueryBuilder {
         parameters = new ArrayList<>();
     }
 
+    /**
+     * Performs a result-given query using the built query and returns a {@link ResultSet}
+     * @return A {@link ResultSet} containing data from the executed query
+     */
     public ResultSet executeQuery() {
         try (PreparedStatement statement = buildStatement()) {
             return statement.executeQuery();
@@ -33,6 +37,10 @@ public class QueryBuilder {
         return null;
     }
 
+    /**
+     * Performs an UPDATE query using the built query and returns the amount of affected rows
+     * @return The amount of affected rows by the performed UPDATE query
+     */
     public int executeUpdate() {
         try (PreparedStatement statement = buildStatement()) {
             return statement.executeUpdate();
@@ -43,6 +51,11 @@ public class QueryBuilder {
         return 0;
     }
 
+    /**
+     * Builds the {@link PreparedStatement} object by building the query and binding parameters to properties
+     * @return A {@link PreparedStatement} object with bound properties
+     * @throws SQLException Thrown when the {@code prepared statement} could not be created
+     */
     private PreparedStatement buildStatement() throws SQLException {
         PreparedStatement statement = connection.prepareStatement(builder.toString());
 
@@ -53,11 +66,21 @@ public class QueryBuilder {
         return statement;
     }
 
+    /**
+     * (UNSAFE!) Appends plain SQL to the query
+     * @param sql The plain SQL to append to the query
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder sql(String sql) {
         builder.append(sql);
         return this;
     }
 
+    /**
+     * Appends a SELECT statement to the query
+     * @param columns (Optional) columns to select. If no columns were given, all columns will be selected
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder select(String... columns) {
         builder.append("SELECT ");
 
@@ -71,11 +94,21 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends a FROM statement to the query
+     * @param table The name of the table to select from
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder from(String table) {
         builder.append("FROM ").append(SQLUtility.quote(table)).append(" ");
         return this;
     }
 
+    /**
+     * Appends a WHERE statement to the query
+     * @param condition A {@link SQLCondition} instance describing how to construct the condition in the WHERE statement
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder where(SQLCondition condition) {
         builder.append("WHERE ").append(condition.build()).append(" ");
 
@@ -84,16 +117,33 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends a condition to a previously appended WHERE clause using the AND keyword
+     * @param condition A {@link SQLCondition} instance describing how to construct the condition in the WHERE statement
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder and(SQLCondition condition) {
         builder.append("AND ");
         return where(condition);
     }
 
+    /**
+     * Appends a condition to a previously appended WHERE clause using the OR keyword
+     * @param condition A {@link SQLCondition} instance describing how to construct the condition in the WHERE statement
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder or(SQLCondition condition) {
         builder.append("OR ");
         return where(condition);
     }
 
+    /**
+     * Appends a JOIN (inner, left, right) statement to the query
+     * @param sqlJoin The type of join to use
+     * @param targetTable The target table to join its data from
+     * @param condition A {@link SQLCondition} instance describing how to construct the match between tables in the JOIN statement
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder join(SQLJoin sqlJoin, final String targetTable, SQLCondition condition) {
         builder.append(" ").append(sqlJoin.getString()).append(" ");
         builder.append(SQLUtility.quote(targetTable));
@@ -105,6 +155,12 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends an ORDER BY statement to the query
+     * @param column The name of the base column to order by
+     * @param columns (Optional) column names to hierarchically order by
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder orderBy(String column, String... columns) {
         builder.append("ORDER BY ").append(SQLUtility.quote(column)).append(" ");
 
@@ -116,6 +172,12 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends a GROUP BY statement to the query
+     * @param column The name of the base column to group by
+     * @param columns (Optional) column names to hierarchically group by
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder groupBy(String column, String... columns) {
         builder.append("GROUP BY ").append(SQLUtility.quote(column)).append(" ");
 
@@ -127,15 +189,32 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends a LIMIT statement to the query
+     * @param limit The limited amount of rows to retrieve
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder limit(int limit) {
         return limit(limit, 0);
     }
 
+    /**
+     * Appends a LIMIT statement to the query (with offset)
+     * @param limit The limited amount of rows to retrieve
+     * @param offset The offset, from the start, to limit the rows on
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder limit(int limit, int offset) {
         builder.append("LIMIT ").append(offset).append(", ").append(limit).append(" ");
         return this;
     }
 
+    /**
+     * Appends an INSERT INTO statement to the query
+     * @param table The name of the table to insert data in
+     * @param columns The name of the columns to insert data in. If left empty, all columns in the table will be filled
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder insertInto(String table, String... columns) {
         builder.append("INSERT INTO ").append(SQLUtility.quote(table));
 
@@ -148,10 +227,21 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends an INSERT INTO statement to the query
+     * @param table The name of the table to insert data in
+     * @param columns A distinct set of the columns to insert data in
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder insertInto(String table, Set<String> columns) {
         return insertInto(table, columns.toArray(new String[0]));
     }
 
+    /**
+     * Appends a list of values to the query, used for the INSERT INTO statement
+     * @param values A collection of values to insert
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder values(Collection<Object> values) {
         builder.append("VALUES (");
 
@@ -168,6 +258,11 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends a list of values to the query, used for the INSERT INTO statement, using a subquery as values
+     * @param queryBuilder A {@link QueryBuilder} object used to subquery a collection
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder values(QueryBuilder queryBuilder) {
         builder.append("VALUES (");
         builder.append(queryBuilder.builder.toString());
@@ -178,6 +273,12 @@ public class QueryBuilder {
         return this;
     }
 
+    /**
+     * Appends an UPDATE statement to the query
+     * @param table The name of the table to update its values for
+     * @param pairs Pairs of fields and keys (in the form of {@link SQLPair} objects) to be updated
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
     public QueryBuilder update(String table, SQLPair... pairs) {
         builder.append("UPDATE ").append(SQLUtility.quote(table)).append(" SET ");
 
