@@ -20,9 +20,8 @@ public abstract class Model {
     /**
      * Constructor on retrieving an existing model from the database
      * @param resultSet The {@link ResultSet} object containing the data from the databse of this model
-     * @throws ModelMetadataNotRegisteredException Thrown when a new instance was attempted to be made when not bound to the SJORM service
      */
-    protected Model(ResultSet resultSet) throws ModelMetadataNotRegisteredException {
+    protected Model(ResultSet resultSet) {
         properties = new LinkedHashMap<>();
         metadata = SJORM.getInstance().getMetadata(getClass());
 
@@ -50,9 +49,8 @@ public abstract class Model {
 
     /**
      * Constructor on creating a new non-existing instance of this model to be saved in the database
-     * @throws ModelMetadataNotRegisteredException Thrown when a new instance was attempted to be made when not bound to the SJORM service
      */
-    public Model() throws ModelMetadataNotRegisteredException {
+    public Model() {
         properties = new LinkedHashMap<>();
         metadata = SJORM.getInstance().getMetadata(getClass());
 

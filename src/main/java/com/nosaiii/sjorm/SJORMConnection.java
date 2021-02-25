@@ -42,7 +42,7 @@ public class SJORMConnection {
                 .sql("DESCRIBE " + SQLUtility.quote(table));
 
         try {
-            List<LinkedHashMap<String, Object>> results = convertToMap(builder.executeQuery());
+            List<LinkedHashMap<String, Object>> results = convertToMap(builder.executeQueryUnsafe());
             return results.stream()
                     .filter(row -> row.get("Key").equals("PRI"))
                     .map(row -> row.get("Field")).toArray(String[]::new);

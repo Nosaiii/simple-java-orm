@@ -38,6 +38,20 @@ public class QueryBuilder {
     }
 
     /**
+     * Performs a result-given query using the built query and returns a {@link ResultSet} that is not automatically being disposed after execution
+     * @return A {@link ResultSet} containing data from the executed query
+     */
+    public ResultSet executeQueryUnsafe() {
+        try {
+            return buildStatement().executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * Performs an UPDATE query using the built query and returns the amount of affected rows
      * @return The amount of affected rows by the performed UPDATE query
      */
@@ -253,7 +267,7 @@ public class QueryBuilder {
 
         builder.append(")");
 
-        parameters.addAll(Collections.singletonList(values));
+        parameters.addAll(values);
 
         return this;
     }

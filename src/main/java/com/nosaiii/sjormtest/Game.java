@@ -6,12 +6,4 @@ import main.java.com.nosaiii.sjorm.annotations.SJORMTable;
 import java.sql.ResultSet;
 
 @SJORMTable(tableName = "game")
-public class Game extends Model {
-    public Game(ResultSet resultSet) {
-        super(resultSet);
-    }
-
-    public Game() {
-        super();
-    }
-}
+public class Game extends Model {}

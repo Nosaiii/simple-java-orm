@@ -5,7 +5,7 @@ import main.java.com.nosaiii.sjorm.SJORM;
 
 public class Main {
     public static void main(String[] args) {
-        SJORM sjorm = SJORM.register("127.0.0.1", 3306, "database", "username", "password");
+        SJORM sjorm = SJORM.register("127.0.0.1", 3306, "gamemakerapitest", "root", "PixelKaasNL1");
         sjorm.registerModel(new ModelMetadata(Game.class));
 
         // Create a new model instance
@@ -15,5 +15,7 @@ public class Main {
         game.setProperty("name", "New super awesome game");
         game.setProperty("min_players", 8);
         game.setProperty("max_players", 24);
+
+        game.save();
     }
 }
