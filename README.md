@@ -76,7 +76,7 @@ SJORM.getInstance().registerModel(new ModelMetadata(Game.class));
 
 The SJORM service is now aware that the `Game` class is a model that exists in your database.
 
-The static `SJORM.register()` method returns the new instance of the SJORM service. Meaning, it is possible to save it as a variable and access it from there as well instead of using the static `SJORM.getInstance()` method. Either way, both options return the same instance of the SJORM service.
+The static `SJORM.register()` method returns the new instance of the SJORM service. Meaning, it is possible to save it as a variable and access it from there as well, instead of using the static `SJORM.getInstance()` method. Either way, both options return the same instance of the SJORM service.
 
 Setting up the SJORM service is now all done!
 
@@ -120,7 +120,7 @@ List<String> names = new ArrayList<>(Arrays.asList("John", "Kim", "Danny"))
 Query<String> queryNames = new Query(names);
 ```
 
-To access the fields of a model, you will have to use its properties. The properties are stored in a `LinkedHashMap` that can be accessed by using either `Model#getProperty()` or `Model#setProperty()`. Where the one acts as a setter and the other as a getter. There are two variations of the `Model#getProperty()` method. One where you can get the value of the property as an `Object` type, and the other where you can specify an explicit type cast to get the property as its correct data type. See the example below:
+To access the fields of a model, you will have to use its properties. The properties are stored in a `LinkedHashMap` that can be accessed by using either `Model#getProperty()` or `Model#setProperty()`. Where the latter acts as a setter and the former as a getter. There are two variations of the `Model#getProperty()` method. One where you can get the value of the property as an `Object` type, and the other where you can specify an explicit type cast to get the property as its correct data type. See the example below:
 #### Manual casting
 ```java
 // Get the first game from the database
@@ -160,7 +160,7 @@ game.setProperty("max_players", 24);
 ```
 
 ### Saving models
-SJORM can be used to change the properties of models and then save them directly to the database. Calling the method `Model#save()` will save changes to your database of the model. SJORM automatically detects if a model already exists or not in the database. By doing this, it will determine whether to use an `INSERT INTO` or an `UPDATE`.
+SJORM can be used to change the properties of models and then save them directly to the database. Calling the method `Model#save()` will save the changes of the model to your database. SJORM automatically detects if a model already exists or not in the database. By doing this, it will determine whether to use an `INSERT INTO` or an `UPDATE`.
 ```java
 // Get the first game from the database
 Game game = SJORM.getInstance().getAll(Game.class).first();
