@@ -2,10 +2,9 @@ package main.java.com.nosaiii.sjorm;
 
 import main.java.com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
 import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import main.java.com.nosaiii.sjorm.querybuilder.QueryBuilder;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -46,20 +45,18 @@ public class SJORM {
 
         ModelMetadata metadata = metadatas.get(modelClass);
 
-        String query = "SELECT * FROM " + metadata.getTable();
+        QueryBuilder builder = new QueryBuilder(connection.getConnection())
+                .select()
+                .from(metadata.getTable());
+
         if(limit > 0) {
-            query += " LIMIT" + limit;
+            builder = builder.limit(limit);
         }
 
-        return getQueryFromSQL(query, modelClass);
-    }
-
-    private <T extends Model> Query<T> getQueryFromSQL(String query, Class<T> modelClass) {
+        ResultSet resultSet = builder.executeQuery();
         try {
-            PreparedStatement statement = connection.getConnection().prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
             return new Query<>(resultSet, modelClass);
-        } catch (SQLException | NoParameterlessConstructorException e) {
+        } catch (NoParameterlessConstructorException e) {
             e.printStackTrace();
         }
 
