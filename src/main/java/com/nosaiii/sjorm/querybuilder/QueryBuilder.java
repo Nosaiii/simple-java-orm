@@ -24,24 +24,10 @@ public class QueryBuilder {
     }
 
     /**
-     * Performs a result-given query using the built query and returns a {@link ResultSet}
-     * @return A {@link ResultSet} containing data from the executed query
-     */
-    public ResultSet executeQuery() {
-        try (PreparedStatement statement = buildStatement()) {
-            return statement.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    /**
      * Performs a result-given query using the built query and returns a {@link ResultSet} that is not automatically being disposed after execution
      * @return A {@link ResultSet} containing data from the executed query
      */
-    public ResultSet executeQueryUnsafe() {
+    public ResultSet executeQuery() {
         try {
             return buildStatement().executeQuery();
         } catch (SQLException e) {
@@ -119,6 +105,17 @@ public class QueryBuilder {
     }
 
     /**
+     * Appends a FROM statement to the query
+     * @param prefixTable The name of the prefix table to select from
+     * @param table The name of the table to select from
+     * @return This instance of the {@link QueryBuilder} to append statements to
+     */
+    public QueryBuilder from(String prefixTable, String table) {
+        builder.append("FROM ").append(SQLUtility.quote(prefixTable)).append(".").append(SQLUtility.quote(table)).append(" ");
+        return this;
+    }
+
+    /**
      * Appends a WHERE statement to the query
      * @param condition A {@link SQLCondition} instance describing how to construct the condition in the WHERE statement
      * @return This instance of the {@link QueryBuilder} to append statements to
@@ -137,8 +134,11 @@ public class QueryBuilder {
      * @return This instance of the {@link QueryBuilder} to append statements to
      */
     public QueryBuilder and(SQLCondition condition) {
-        builder.append("AND ");
-        return where(condition);
+        builder.append("AND ").append(condition.build()).append(" ");
+
+        parameters.addAll(Arrays.asList(condition.getObfuscatedValues()));
+
+        return this;
     }
 
     /**
@@ -147,8 +147,11 @@ public class QueryBuilder {
      * @return This instance of the {@link QueryBuilder} to append statements to
      */
     public QueryBuilder or(SQLCondition condition) {
-        builder.append("OR ");
-        return where(condition);
+        builder.append("OR ").append(condition.build()).append(" ");
+
+        parameters.addAll(Arrays.asList(condition.getObfuscatedValues()));
+
+        return this;
     }
 
     /**

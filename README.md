@@ -37,8 +37,18 @@ First, it is necessary to create your models, which are basically your tables pr
 
 ```java
 @SJORMTable(tableName = "game")
-public class Game extends Model {}
+public class Game extends Model {
+    public Game(ResultSet rs) {
+        super(rs);
+    }
+
+    public Game() {
+        super();
+    }
+}
 ```
+
+Note that the compiler will not give you an error about the missing constructor if you had not defined it. The reason for this is that `Model` contains two constructors; one for instantiating a model and one on retrieving data from the database when generating model objects. It is necessary to include both constructors in the inherited model class and to call both of their super constructors, as shown in the example above.
 
 The `SJORMTable` annotation is used to define what table this model belongs to in your database. It is required for your model to correctly get registered to the SJORM service.
 

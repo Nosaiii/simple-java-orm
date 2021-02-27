@@ -24,8 +24,17 @@ public class Query<T extends Model> {
 
         try {
             while (resultSet.next()) {
-                Constructor<T> modelConstructor = modelClass.getConstructor(ResultSet.class);
-                Model model = modelConstructor.newInstance(resultSet);
+                Model model = null;
+
+                if(modelClass.equals(PivotModel.class)) {
+                    Constructor<T> pivotModelConstructor = modelClass.getConstructor(ResultSet.class, Class.class, Class.class);
+                    PivotModelMetadata pivotModelMetadata = SJORM.getInstance().getPivotMetadata((Class<? extends PivotModel>) modelClass);
+
+                    model = pivotModelConstructor.newInstance(resultSet, pivotModelMetadata.getTypeLeft(), pivotModelMetadata.getTypeRight());
+                } else {
+                    Constructor<T> modelConstructor = modelClass.getConstructor(ResultSet.class);
+                    model = modelConstructor.newInstance(resultSet);
+                }
 
                 //noinspection unchecked
                 collection.add((T) model);

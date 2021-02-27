@@ -1,12 +1,12 @@
 package main.java.com.nosaiii.sjorm;
 
 import main.java.com.nosaiii.sjorm.querybuilder.QueryBuilder;
+import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLBasicCondition;
+import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLConditionType;
 import main.java.com.nosaiii.sjorm.utility.SQLUtility;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class SJORMConnection {
     private String host;
@@ -42,7 +42,7 @@ public class SJORMConnection {
                 .sql("DESCRIBE " + SQLUtility.quote(table));
 
         try {
-            List<LinkedHashMap<String, Object>> results = convertToMap(builder.executeQueryUnsafe());
+            List<LinkedHashMap<String, Object>> results = convertToMap(builder.executeQuery());
             return results.stream()
                     .filter(row -> row.get("Key").equals("PRI"))
                     .map(row -> row.get("Field")).toArray(String[]::new);
@@ -51,6 +51,32 @@ public class SJORMConnection {
         }
 
         return null;
+    }
+
+    /**
+     * Constructs a defined map of key-value pairs where column names refer to a its foreign key reference, including its table name and column name
+     * @param table The name of the table to get its foreign key references from
+     * @return A defined map of key-value pairs where column names refer to a its foreign key reference, including its table name and column name
+     */
+    public Map<String, ForeignKeyReference> getForeignKeyReferences(String table) {
+        Map<String, ForeignKeyReference> references = new HashMap<>();
+
+        QueryBuilder builder = new QueryBuilder(connection)
+                .select("COLUMN_NAME", "REFERENCED_TABLE_NAME", "REFERENCED_COLUMN_NAME")
+                .from("INFORMATION_SCHEMA", "KEY_COLUMN_USAGE")
+                .where(new SQLBasicCondition("REFERENCED_TABLE_SCHEMA", SQLConditionType.EQUALS, database))
+                .and(new SQLBasicCondition("TABLE_NAME", SQLConditionType.EQUALS, table));
+
+        try(ResultSet resultSet = builder.executeQuery()) {
+            while(resultSet.next()) {
+                ForeignKeyReference reference = new ForeignKeyReference(resultSet.getString(2), resultSet.getString(3));
+                references.put(resultSet.getString(1), reference);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return references;
     }
 
     /**

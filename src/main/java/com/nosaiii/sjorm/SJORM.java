@@ -15,6 +15,7 @@ public class SJORM {
 
     @SuppressWarnings("SpellCheckingInspection")
     private final HashMap<Class<? extends Model>, ModelMetadata> metadatas;
+    private final HashMap<Class<? extends PivotModel>, PivotModelMetadata> pivotMetadatas;
 
     /**
      * Bounds the SJORM service to the static instance
@@ -40,6 +41,7 @@ public class SJORM {
     private SJORM(String host, int port, String database, String username, String password) {
         connection = new SJORMConnection(host, port, database, username, password);
         metadatas = new HashMap<>();
+        pivotMetadatas = new HashMap<>();
     }
 
     /**
@@ -48,6 +50,14 @@ public class SJORM {
      */
     public void registerModel(ModelMetadata metadata) {
         metadatas.put(metadata.getType(), metadata);
+    }
+
+    /**
+     * Bounds a pivot model to the SJORM service using the given metadata of the pivot model
+     * @param metadata The metadata of the pivot model to bound to the service
+     */
+    public void registerPivotModel(PivotModelMetadata metadata) {
+        pivotMetadatas.put(metadata.getType(), metadata);
     }
 
     /**
@@ -106,6 +116,20 @@ public class SJORM {
         }
 
         return metadatas.get(modelClass);
+    }
+
+    /**
+     * Gets the metadata from the service by the given class type of the pivot model
+     * @param modelClass The class type of the pivot model to retrieve the metadata from
+     * @return A {@link ModelMetadata} object containing metadata of a pivot model
+     * @throws ModelMetadataNotRegisteredException Thrown when the given class type of the pivot model was not bound to the SJORM service
+     */
+    public PivotModelMetadata getPivotMetadata(Class<? extends PivotModel> modelClass) throws ModelMetadataNotRegisteredException {
+        if(!pivotMetadatas.containsKey(modelClass)) {
+            throw new ModelMetadataNotRegisteredException(modelClass);
+        }
+
+        return pivotMetadatas.get(modelClass);
     }
 
     /**

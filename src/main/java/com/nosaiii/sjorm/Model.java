@@ -1,6 +1,7 @@
 package main.java.com.nosaiii.sjorm;
 
 import main.java.com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
+import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
 import main.java.com.nosaiii.sjorm.querybuilder.QueryBuilder;
 import main.java.com.nosaiii.sjorm.querybuilder.SQLPair;
 import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLBasicCondition;
@@ -8,6 +9,7 @@ import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLConditionType;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Model {
     private final LinkedHashMap<String, Object> properties;
@@ -21,7 +23,7 @@ public abstract class Model {
      * Constructor on retrieving an existing model from the database
      * @param resultSet The {@link ResultSet} object containing the data from the databse of this model
      */
-    protected Model(ResultSet resultSet) {
+    public Model(ResultSet resultSet) {
         properties = new LinkedHashMap<>();
         metadata = SJORM.getInstance().getMetadata(getClass());
 
@@ -125,5 +127,63 @@ public abstract class Model {
      */
     public <T> T getProperty(String column, Class<T> clazz) {
         return clazz.cast(getProperty(column));
+    }
+
+    public <T extends Model> Query<T> hasMany(Class<T> targetModelClass, String... foreignKeyColumns) {
+        // Automatically get names of foreign key columns if not set
+        if(foreignKeyColumns.length == 0) {
+            foreignKeyColumns = Arrays.stream(metadata.getPrimaryKeyFields())
+                    .map(pk -> metadata.getTable() + "_" + pk)
+                    .toArray(String[]::new);
+        }
+
+        String targetTableName = SJORM.getInstance().getMetadata(targetModelClass).getTable();
+
+        // Construct base query
+        QueryBuilder builder = new QueryBuilder(SJORM.getInstance().getSJORMConnection().getConnection())
+                .select()
+                .from(targetTableName);
+
+        // Add WHERE statements to get the correct rows
+        Map<String, ForeignKeyReference> foreignKeyReference = SJORM.getInstance().getSJORMConnection().getForeignKeyReferences(targetTableName);
+
+        for(int i = 0; i < foreignKeyColumns.length; i++) {
+            String foreignKeyColumn = foreignKeyColumns[i];
+            String sourceColumn = foreignKeyReference.get(foreignKeyColumn).getColumn();
+
+            SQLBasicCondition condition = new SQLBasicCondition(foreignKeyColumn, SQLConditionType.EQUALS, getProperty(sourceColumn));
+            if(i == 0) {
+                builder = builder.where(condition);
+            } else {
+                builder = builder.and(condition);
+            }
+        }
+
+        // Construct a Query<T> object from the result set of the query
+        try(ResultSet resultSet = builder.executeQuery()) {
+            return new Query<>(resultSet, targetModelClass);
+        } catch (SQLException | NoParameterlessConstructorException e) {
+            e.printStackTrace();
+        }
+
+        // Return an empty query if something went wrong
+        return new Query<>(new ArrayList<>());
+    }
+
+    public <T extends Model> Query<T> belongsTo(Class<T> targetModelClass, String... foreignKeyColumns) {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("[" + getClass().getSimpleName() + "] ");
+
+        List<String> properties = new ArrayList<>();
+        for(Map.Entry<String, Object> property : this.properties.entrySet()) {
+            properties.add(property.getKey() + ":" + property.getValue());
+        }
+        stringBuilder.append(String.join("|", properties));
+
+        return stringBuilder.toString();
     }
 }
