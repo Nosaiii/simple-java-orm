@@ -1,40 +1,31 @@
-package main.java.com.nosaiii.sjorm;
+package main.java.com.nosaiii.sjorm.metadata;
 
+import main.java.com.nosaiii.sjorm.Model;
+import main.java.com.nosaiii.sjorm.PivotModel;
+import main.java.com.nosaiii.sjorm.SJORM;
 import main.java.com.nosaiii.sjorm.annotations.SJORMTable;
 
-public class PivotModelMetadata {
-    private final Class<? extends PivotModel> type;
+public class PivotModelMetadata extends AbstractModelMetadata {
     private final Class<? extends Model> typeLeft;
     private final Class<? extends Model> typeRight;
 
-    private final String table;
     private final String tableLeft;
     private final String tableRight;
 
-    private final String[] primaryKeyFields;
     private final String[] primaryKeyFieldsLeft;
     private final String[] primaryKeyFieldsRight;
 
     public PivotModelMetadata(Class<? extends PivotModel> type, Class<? extends Model> typeLeft, Class<? extends Model> typeRight) {
-        this.type = type;
+        super(type);
+
         this.typeLeft = typeLeft;
         this.typeRight = typeRight;
 
-        this.table = type.getAnnotation(SJORMTable.class).tableName();
         this.tableLeft = typeLeft.getAnnotation(SJORMTable.class).tableName();
         this.tableRight = typeRight.getAnnotation(SJORMTable.class).tableName();
 
-        primaryKeyFields = SJORM.getInstance().getSJORMConnection().getPrimaryKeys(table);
         primaryKeyFieldsLeft = SJORM.getInstance().getSJORMConnection().getPrimaryKeys(tableLeft);
         primaryKeyFieldsRight = SJORM.getInstance().getSJORMConnection().getPrimaryKeys(tableRight);
-    }
-
-    /**
-     * The type the pivot model this metadata is associated with
-     * @return The type the pivot model this metadata is associated with
-     */
-    public Class<? extends PivotModel> getType() {
-        return type;
     }
 
     /**
@@ -54,14 +45,6 @@ public class PivotModelMetadata {
     }
 
     /**
-     * The table name as it is described in the database
-     * @return The table name as it is described in the database
-     */
-    public String getTable() {
-        return table;
-    }
-
-    /**
      * The table name of the left side as it is described in the database
      * @return The table name of the left side as it is described in the database
      */
@@ -75,14 +58,6 @@ public class PivotModelMetadata {
      */
     public String getTableRight() {
         return tableRight;
-    }
-
-    /**
-     * The column name(s) of the primary key of the table in the database
-     * @return The column name(s) of the primary key of the table in the database
-     */
-    public String[] getPrimaryKeyFields() {
-        return primaryKeyFields;
     }
 
     /**

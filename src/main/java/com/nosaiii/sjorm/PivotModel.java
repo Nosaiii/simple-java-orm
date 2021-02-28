@@ -2,17 +2,17 @@ package main.java.com.nosaiii.sjorm;
 
 import java.sql.ResultSet;
 
-public class PivotModel<Left extends Model, Right extends Model> extends Model {
-    private final Class<Left> classLeft;
-    private final Class<Right> classRight;
+public class PivotModel extends Model {
+    private final Class<? extends Model> classLeft;
+    private final Class<? extends Model> classRight;
 
-    public PivotModel(ResultSet resultSet, Class<Left> classLeft, Class<Right> classRight) {
+    public PivotModel(ResultSet resultSet, Class<? extends Model> classLeft, Class<? extends Model> classRight) {
         super(resultSet);
         this.classLeft = classLeft;
         this.classRight = classRight;
     }
 
-    public PivotModel(Class<Left> classLeft, Class<Right> classRight) {
+    public PivotModel(Class<? extends Model> classLeft, Class<? extends Model> classRight) {
         this.classLeft = classLeft;
         this.classRight = classRight;
     }
@@ -21,7 +21,7 @@ public class PivotModel<Left extends Model, Right extends Model> extends Model {
      * Gets the class type of the model on the left side of the pivot table
      * @return The class type of the model on the left side of the pivot table
      */
-    public Class<Left> getClassLeft() {
+    public Class<? extends Model> getClassLeft() {
         return classLeft;
     }
 
@@ -29,7 +29,7 @@ public class PivotModel<Left extends Model, Right extends Model> extends Model {
      * Gets the class type of the model on the right side of the pivot table
      * @return The class type of the model on the right side of the pivot table
      */
-    public Class<Right> getClassRight() {
+    public Class<? extends Model> getClassRight() {
         return classRight;
     }
 }

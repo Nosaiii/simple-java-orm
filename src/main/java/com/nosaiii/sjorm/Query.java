@@ -1,6 +1,7 @@
 package main.java.com.nosaiii.sjorm;
 
 import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import main.java.com.nosaiii.sjorm.metadata.PivotModelMetadata;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -28,7 +29,7 @@ public class Query<T extends Model> {
 
                 if(modelClass.equals(PivotModel.class)) {
                     Constructor<T> pivotModelConstructor = modelClass.getConstructor(ResultSet.class, Class.class, Class.class);
-                    PivotModelMetadata pivotModelMetadata = SJORM.getInstance().getPivotMetadata((Class<? extends PivotModel>) modelClass);
+                    PivotModelMetadata pivotModelMetadata = (PivotModelMetadata) SJORM.getInstance().getMetadata(modelClass);
 
                     model = pivotModelConstructor.newInstance(resultSet, pivotModelMetadata.getTypeLeft(), pivotModelMetadata.getTypeRight());
                 } else {
