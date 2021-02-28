@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class Query<T extends Model> {
+public class Query<T extends Model> implements Iterable<T> {
     private List<T> collection;
 
     /**
@@ -370,5 +370,22 @@ public class Query<T extends Model> {
     @Override
     public Query<T> clone() {
         return new Query<>(this);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private T current;
+
+            @Override
+            public boolean hasNext() {
+                return collection.indexOf(current) + 1 < collection.size();
+            }
+
+            @Override
+            public T next() {
+                return current = collection.get(collection.indexOf(current) + 1);
+            }
+        };
     }
 }
