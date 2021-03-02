@@ -108,7 +108,7 @@ Query<Game> gamesOrderedById = games.orderBy("id");
 Query<Game> gamesStartingWithA = games.where(g -> g.getProperty("name", String.class).matches("[aA].*"));
 
 // Loop over all Game instances
-for(Game game : games.toList()) {
+for(Game game : games) {
     // Do something with 'game'
 }
 ```
@@ -169,6 +169,100 @@ game.save();
 ```
 
 ### Set up relationships
+In order to map your relationship between models, you will have to define them in your model class. It is a matter of returning the result of the relationship of what it refers to (single model or a collection) depending on the type of relationship.
+
+SJORM's relationship system is built for two very specific relationship types:
+- One-to-many &rarr; The model refers to a collection of related models where the foreign key is stored in the target table
+- Many-to-many &rarr; The model refers to a collection of related models. The same counts for the other way around. There is a pivot table between holding the foreign keys.
+
+If we take our Game model, and we also create a Team model, which holds just a name for the team, and a foreign key referencing to what game it belongs to, we can define their relationship using SJORM as follows:
+
+**Game.java**:
+```java
+@SJORMTable(tableName = "game")
+public class Game extends Model {
+    public Game(ResultSet resultSet) {
+        super(resultSet);
+    }
+
+    public Query<Team> getTeams() {
+        return hasMany(Team.class);
+    }
+}
+```
+
+**Team.java**:
+```java
+@SJORMTable(tableName = "team")
+public class Team extends Model {
+    public Team(ResultSet rs) {
+        super(rs);
+    }
+
+    public Team() {
+        super();
+    }
+
+    public Game getGame() {
+        return belongsTo(Game.class);
+    }
+}
+```
+
+The method `Model#hasMany` assumes that the foreign key is stored in the target table. In the case above, the foreign key is stored in the Team model. The method `Model#belongsTo` assumes that the foreign key is stored in its own table, thus a Team model only has one single relationship to a Game.
+
+If your database makes use of a Many-to-many relationship with a pivot table between two tables, you will have to also define the pivot table as its own model and have it extend from `PivotModel`. This type of model has extended functionality, compared to a regular `Model` super class to support Many-to-many relationships.
+
+Assume a Game model can have multiple tags associated to it and the same counts for the other way around. In this case, a pivot table will be used containing foreign keys using ids to identify what games belong to what tag and what tags belong to what game. For this case, use the `Model#hasManyPivot` and pass the class type of a pivot model as reference. See this use case in the example below:
+**Game.java**:
+```java
+@SJORMTable(tableName = "game")
+public class Game extends Model {
+    public Game(ResultSet resultSet) {
+        super(resultSet);
+    }
+
+    public Query<Team> getTags() {
+        return hasManyPivot(GameTag.class);
+    }
+}
+```
+
+**Tag.java**:
+```java
+@SJORMTable(tableName = "tag")
+public class Tag extends Model {
+    public Tag(ResultSet rs) {
+        super(rs);
+    }
+
+    public Tag() {
+        super();
+    }
+
+    public Query<Game> getGames() {
+        return hasManyPivot(GameTag.class);
+    }
+}
+```
+
+**GameTag.java**: (Pivot table)
+```java
+@SJORMTable(tableName = "game_tag")
+public class GameTag extends PivotModel {
+    public GameTag(ResultSet rs) {
+        super(rs, Game.class, Tag.class);
+    }
+
+    public GameTag() {
+        super(Game.class, Tag.class);
+    }
+}
+```
+
+As you can see, you can directly get a collection of its related models from both sides without first having to refer to the underlying pivot model.
+
+### Virtual properties
 *To be continued during future development*
 
 ---

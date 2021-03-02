@@ -1,4 +1,4 @@
-package main.java.com.nosaiii.sjorm.utility;
+package com.nosaiii.sjorm.utility;
 
 import java.util.ArrayList;
 import java.util.List;

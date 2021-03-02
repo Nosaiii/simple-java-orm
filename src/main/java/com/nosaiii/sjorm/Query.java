@@ -1,16 +1,21 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm;
 
-import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import com.nosaiii.sjorm.metadata.PivotModelMetadata;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
-public class Query<T extends Model> {
+public class Query<T extends Model> implements Iterable<T> {
     private List<T> collection;
 
     /**
@@ -24,8 +29,17 @@ public class Query<T extends Model> {
 
         try {
             while (resultSet.next()) {
-                Constructor<T> modelConstructor = modelClass.getConstructor(ResultSet.class);
-                Model model = modelConstructor.newInstance(resultSet);
+                Model model = null;
+
+                if(modelClass.equals(PivotModel.class)) {
+                    Constructor<T> pivotModelConstructor = modelClass.getConstructor(ResultSet.class, Class.class, Class.class);
+                    PivotModelMetadata pivotModelMetadata = (PivotModelMetadata) SJORM.getInstance().getMetadata(modelClass);
+
+                    model = pivotModelConstructor.newInstance(resultSet, pivotModelMetadata.getTypeLeft(), pivotModelMetadata.getTypeRight());
+                } else {
+                    Constructor<T> modelConstructor = modelClass.getConstructor(ResultSet.class);
+                    model = modelConstructor.newInstance(resultSet);
+                }
 
                 //noinspection unchecked
                 collection.add((T) model);
@@ -360,5 +374,22 @@ public class Query<T extends Model> {
     @Override
     public Query<T> clone() {
         return new Query<>(this);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private T current;
+
+            @Override
+            public boolean hasNext() {
+                return collection.indexOf(current) + 1 < collection.size();
+            }
+
+            @Override
+            public T next() {
+                return current = collection.get(collection.indexOf(current) + 1);
+            }
+        };
     }
 }

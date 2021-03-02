@@ -1,4 +1,4 @@
-package main.java.com.nosaiii.sjorm.annotations;
+package com.nosaiii.sjorm.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

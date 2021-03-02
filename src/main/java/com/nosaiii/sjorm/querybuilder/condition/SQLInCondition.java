@@ -1,6 +1,6 @@
-package main.java.com.nosaiii.sjorm.querybuilder.condition;
+package com.nosaiii.sjorm.querybuilder.condition;
 
-import main.java.com.nosaiii.sjorm.utility.SQLUtility;
+import com.nosaiii.sjorm.utility.SQLUtility;
 
 import java.util.Arrays;
 import java.util.List;

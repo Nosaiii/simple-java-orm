@@ -1,7 +1,7 @@
-package main.java.com.nosaiii.sjorm.querybuilder.condition;
+package com.nosaiii.sjorm.querybuilder.condition;
 
-import main.java.com.nosaiii.sjorm.querybuilder.SQLPair;
-import main.java.com.nosaiii.sjorm.utility.SQLUtility;
+import com.nosaiii.sjorm.querybuilder.SQLPair;
+import com.nosaiii.sjorm.utility.SQLUtility;
 
 public class SQLBasicCondition implements SQLCondition {
     private final SQLPair pair;

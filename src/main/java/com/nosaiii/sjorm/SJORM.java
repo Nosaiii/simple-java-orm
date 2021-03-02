@@ -1,8 +1,10 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm;
 
-import main.java.com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
-import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
-import main.java.com.nosaiii.sjorm.querybuilder.QueryBuilder;
+import com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
+import com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import com.nosaiii.sjorm.metadata.AbstractModelMetadata;
+import com.nosaiii.sjorm.metadata.ModelMetadata;
+import com.nosaiii.sjorm.querybuilder.QueryBuilder;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class SJORM {
     private final SJORMConnection connection;
 
     @SuppressWarnings("SpellCheckingInspection")
-    private final HashMap<Class<? extends Model>, ModelMetadata> metadatas;
+    private final HashMap<Class<? extends Model>, AbstractModelMetadata> metadatas;
 
     /**
      * Bounds the SJORM service to the static instance
@@ -46,7 +48,7 @@ public class SJORM {
      * Bounds a model to the SJORM service using the given metadata of the model
      * @param metadata The metadata of the model to bound to the service
      */
-    public void registerModel(ModelMetadata metadata) {
+    public void registerModel(AbstractModelMetadata metadata) {
         metadatas.put(metadata.getType(), metadata);
     }
 
@@ -74,7 +76,7 @@ public class SJORM {
             throw new ModelMetadataNotRegisteredException(modelClass);
         }
 
-        ModelMetadata metadata = metadatas.get(modelClass);
+        AbstractModelMetadata metadata = metadatas.get(modelClass);
 
         QueryBuilder builder = new QueryBuilder(connection.getConnection())
                 .select()
@@ -100,7 +102,7 @@ public class SJORM {
      * @return A {@link ModelMetadata} object containing metadata of a model
      * @throws ModelMetadataNotRegisteredException Thrown when the given class type of the model was not bound to the SJORM service
      */
-    public ModelMetadata getMetadata(Class<? extends Model> modelClass) throws ModelMetadataNotRegisteredException {
+    public AbstractModelMetadata getMetadata(Class<? extends Model> modelClass) throws ModelMetadataNotRegisteredException {
         if(!metadatas.containsKey(modelClass)) {
             throw new ModelMetadataNotRegisteredException(modelClass);
         }

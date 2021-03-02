@@ -1,4 +1,4 @@
-package main.java.com.nosaiii.sjorm.querybuilder;
+package com.nosaiii.sjorm.querybuilder;
 
 public class SQLPair {
     private final String field;

@@ -1,4 +1,4 @@
-package main.java.com.nosaiii.sjorm.querybuilder.condition;
+package com.nosaiii.sjorm.querybuilder.condition;
 
 public interface SQLCondition {
     /**

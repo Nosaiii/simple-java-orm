@@ -1,13 +1,15 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm.metadata;
 
-import main.java.com.nosaiii.sjorm.annotations.SJORMTable;
+import com.nosaiii.sjorm.Model;
+import com.nosaiii.sjorm.SJORM;
+import com.nosaiii.sjorm.annotations.SJORMTable;
 
-public class ModelMetadata {
+public abstract class AbstractModelMetadata {
     private final Class<? extends Model> type;
     private final String table;
     private final String[] primaryKeyFields;
 
-    public ModelMetadata(Class<? extends Model> type) {
+    public AbstractModelMetadata(Class<? extends Model> type) {
         this.type = type;
         this.table = type.getAnnotation(SJORMTable.class).tableName();
         primaryKeyFields = SJORM.getInstance().getSJORMConnection().getPrimaryKeys(table);
