@@ -169,7 +169,7 @@ game.save();
 ```
 
 ### Set up relationships
-Now to map your relationship between models, you will have to define them in your model class. It is a matter of returning the result of the relationship of what it refers to (single model or a collection) depending on the type of relationship.
+In order to map your relationship between models, you will have to define them in your model class. It is a matter of returning the result of the relationship of what it refers to (single model or a collection) depending on the type of relationship.
 
 SJORM's relationship system is built for two very specific relationship types:
 - One-to-many &rarr; The model refers to a collection of related models where the foreign key is stored in the target table
@@ -209,7 +209,7 @@ public class Team extends Model {
 }
 ```
 
-The method `Model#hasMany` assumes that the foreign key is stored in the target table. In the case above the foreign key is stored in the Team model. The method `Model#belongsTo` assumes that the foreign key is stored in its own table, thus a Team model only has one single relationship to a Game.
+The method `Model#hasMany` assumes that the foreign key is stored in the target table. In the case above, the foreign key is stored in the Team model. The method `Model#belongsTo` assumes that the foreign key is stored in its own table, thus a Team model only has one single relationship to a Game.
 
 If your database makes use of a Many-to-many relationship with a pivot table between two tables, you will have to also define the pivot table as its own model and have it extend from `PivotModel`. This type of model has extended functionality, compared to a regular `Model` super class to support Many-to-many relationships.
 
