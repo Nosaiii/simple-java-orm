@@ -1,14 +1,18 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm;
 
-import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
-import main.java.com.nosaiii.sjorm.metadata.PivotModelMetadata;
+import com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import com.nosaiii.sjorm.metadata.PivotModelMetadata;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class Query<T extends Model> implements Iterable<T> {

@@ -1,11 +1,10 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm;
 
-import main.java.com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
-import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
-import main.java.com.nosaiii.sjorm.metadata.AbstractModelMetadata;
-import main.java.com.nosaiii.sjorm.metadata.ModelMetadata;
-import main.java.com.nosaiii.sjorm.metadata.PivotModelMetadata;
-import main.java.com.nosaiii.sjorm.querybuilder.QueryBuilder;
+import com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
+import com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import com.nosaiii.sjorm.metadata.AbstractModelMetadata;
+import com.nosaiii.sjorm.metadata.ModelMetadata;
+import com.nosaiii.sjorm.querybuilder.QueryBuilder;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;

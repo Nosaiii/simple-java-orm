@@ -1,9 +1,9 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm;
 
-import main.java.com.nosaiii.sjorm.querybuilder.QueryBuilder;
-import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLBasicCondition;
-import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLConditionType;
-import main.java.com.nosaiii.sjorm.utility.SQLUtility;
+import com.nosaiii.sjorm.querybuilder.QueryBuilder;
+import com.nosaiii.sjorm.querybuilder.condition.SQLBasicCondition;
+import com.nosaiii.sjorm.querybuilder.condition.SQLConditionType;
+import com.nosaiii.sjorm.utility.SQLUtility;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

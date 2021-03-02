@@ -1,16 +1,22 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm;
 
-import main.java.com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
-import main.java.com.nosaiii.sjorm.metadata.AbstractModelMetadata;
-import main.java.com.nosaiii.sjorm.metadata.ModelMetadata;
-import main.java.com.nosaiii.sjorm.metadata.PivotModelMetadata;
-import main.java.com.nosaiii.sjorm.querybuilder.QueryBuilder;
-import main.java.com.nosaiii.sjorm.querybuilder.SQLPair;
-import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLBasicCondition;
-import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLConditionType;
+import com.nosaiii.sjorm.exceptions.NoParameterlessConstructorException;
+import com.nosaiii.sjorm.metadata.AbstractModelMetadata;
+import com.nosaiii.sjorm.metadata.PivotModelMetadata;
+import com.nosaiii.sjorm.querybuilder.QueryBuilder;
+import com.nosaiii.sjorm.querybuilder.SQLPair;
+import com.nosaiii.sjorm.querybuilder.condition.SQLBasicCondition;
+import com.nosaiii.sjorm.querybuilder.condition.SQLConditionType;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class Model {
     private final LinkedHashMap<String, Object> properties;

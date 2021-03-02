@@ -1,4 +1,4 @@
-package main.java.com.nosaiii.sjorm;
+package com.nosaiii.sjorm;
 
 import java.sql.ResultSet;
 

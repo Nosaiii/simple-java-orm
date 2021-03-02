@@ -1,13 +1,17 @@
-package main.java.com.nosaiii.sjorm.querybuilder;
+package com.nosaiii.sjorm.querybuilder;
 
-import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLCondition;
-import main.java.com.nosaiii.sjorm.utility.SQLUtility;
+import com.nosaiii.sjorm.querybuilder.condition.SQLCondition;
+import com.nosaiii.sjorm.utility.SQLUtility;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class QueryBuilder {

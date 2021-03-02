@@ -1,9 +1,9 @@
-package main.java.com.nosaiii.sjorm.metadata;
+package com.nosaiii.sjorm.metadata;
 
-import main.java.com.nosaiii.sjorm.Model;
-import main.java.com.nosaiii.sjorm.PivotModel;
-import main.java.com.nosaiii.sjorm.SJORM;
-import main.java.com.nosaiii.sjorm.annotations.SJORMTable;
+import com.nosaiii.sjorm.Model;
+import com.nosaiii.sjorm.SJORM;
+import com.nosaiii.sjorm.annotations.SJORMTable;
+import com.nosaiii.sjorm.PivotModel;
 
 public class PivotModelMetadata extends AbstractModelMetadata {
     private final Class<? extends Model> typeLeft;
