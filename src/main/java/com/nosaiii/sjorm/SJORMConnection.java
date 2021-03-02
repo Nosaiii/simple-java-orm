@@ -5,8 +5,16 @@ import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLBasicCondition;
 import main.java.com.nosaiii.sjorm.querybuilder.condition.SQLConditionType;
 import main.java.com.nosaiii.sjorm.utility.SQLUtility;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.ResultSetMetaData;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 
 public class SJORMConnection {
     private String host;
