@@ -2,11 +2,13 @@ package com.nosaiii.sjorm;
 
 import static org.junit.Assert.*;
 
+import com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
 import com.nosaiii.sjorm.metadata.AbstractModelMetadata;
 import com.nosaiii.sjorm.metadata.ModelMetadata;
 import com.nosaiii.sjorm.models.DummyModel;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -67,5 +69,17 @@ public class ModelTests {
         assertEquals(retrievedModelMetadata.getType(), DummyModel.class);
         assertEquals("dummy", retrievedModelMetadata.getTable());
         assertArrayEquals(new String[] { "id" }, retrievedModelMetadata.getPrimaryKeyFields());
+    }
+
+    @Test
+    public void getMetadata_WithUnregisteredModel_ShouldThrowModelMetadataNotRegisteredException() {
+        // Arange
+        // ! Not required
+
+        // Act
+        ThrowingRunnable act = () -> sjorm.getMetadata(DummyModel.class);
+
+        // Assert
+        assertThrows(ModelMetadataNotRegisteredException.class, act);
     }
 }
