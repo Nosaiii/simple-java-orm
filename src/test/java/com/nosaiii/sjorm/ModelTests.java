@@ -8,7 +8,6 @@ import com.nosaiii.sjorm.models.DummyModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -52,5 +51,21 @@ public class ModelTests {
         // Assert
         assertTrue(sjorm.getMetadatas().containsKey(DummyModel.class));
         assertNotNull(sjorm.getMetadata(DummyModel.class));
+    }
+
+    @Test
+    public void getMetadata_WithRegisteredModel_ShouldReturnValidModelMetadata() {
+        // Arrange
+        AbstractModelMetadata registeredModelMetadata = new ModelMetadata(DummyModel.class);
+
+        // Act
+        sjorm.registerModel(registeredModelMetadata);
+        AbstractModelMetadata retrievedModelMetadata = sjorm.getMetadata(DummyModel.class);
+
+        // Assert
+        assertNotNull(retrievedModelMetadata);
+        assertEquals(retrievedModelMetadata.getType(), DummyModel.class);
+        assertEquals("dummy", retrievedModelMetadata.getTable());
+        assertArrayEquals(new String[] { "id" }, retrievedModelMetadata.getPrimaryKeyFields());
     }
 }
