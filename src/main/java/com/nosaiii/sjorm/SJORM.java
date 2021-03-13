@@ -33,7 +33,7 @@ public class SJORM {
 
     /**
      * The singleton registered instance of the SJORM service
-     * @return
+     * @return The singleton registered instance of the SJORM service
      */
     public static SJORM getInstance() {
         return instance;
@@ -49,7 +49,7 @@ public class SJORM {
      * @param metadata The metadata of the model to bound to the service
      */
     public void registerModel(AbstractModelMetadata metadata) {
-        metadatas.put(metadata.getType(), metadata);
+        getMetadatas().put(metadata.getType(), metadata);
     }
 
     /**
@@ -72,11 +72,11 @@ public class SJORM {
      * @throws ModelMetadataNotRegisteredException Thrown when the given class type of the model was not bound to the SJORM service
      */
     public <T extends Model> Query<T> getLimit(Class<T> modelClass, int limit) throws ModelMetadataNotRegisteredException {
-        if(!metadatas.containsKey(modelClass)) {
+        if(!getMetadatas().containsKey(modelClass)) {
             throw new ModelMetadataNotRegisteredException(modelClass);
         }
 
-        AbstractModelMetadata metadata = metadatas.get(modelClass);
+        AbstractModelMetadata metadata = getMetadatas().get(modelClass);
 
         QueryBuilder builder = new QueryBuilder(connection.getConnection())
                 .select()
@@ -103,11 +103,11 @@ public class SJORM {
      * @throws ModelMetadataNotRegisteredException Thrown when the given class type of the model was not bound to the SJORM service
      */
     public AbstractModelMetadata getMetadata(Class<? extends Model> modelClass) throws ModelMetadataNotRegisteredException {
-        if(!metadatas.containsKey(modelClass)) {
+        if(!getMetadatas().containsKey(modelClass)) {
             throw new ModelMetadataNotRegisteredException(modelClass);
         }
 
-        return metadatas.get(modelClass);
+        return getMetadatas().get(modelClass);
     }
 
     /**
@@ -116,5 +116,13 @@ public class SJORM {
      */
     public SJORMConnection getSJORMConnection() {
         return connection;
+    }
+
+    /**
+     * Gets the map of registered metadatas given by the model class as key
+     * @return Gets the map of registered metadatas given by the model class as key
+     */
+    public HashMap<Class<? extends Model>, AbstractModelMetadata> getMetadatas() {
+        return metadatas;
     }
 }
