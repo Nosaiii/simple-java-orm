@@ -59,4 +59,30 @@ public class DataAccessTests {
         // Assert
         assertEquals(models.length, query.count());
     }
+
+    @Test
+    public void getAll_WithValidEntries_ShouldReturnCorrectPropertyValues() {
+        // Arrange
+        DummyModel[] models = new DummyModel[] {
+                new DummyModel() {{
+                    setProperty("field1", "cheese");
+                }},
+                new DummyModel() {{
+                    setProperty("field1", "apple");
+                }},
+                new DummyModel() {{
+                    setProperty("field1", "bread");
+                }}
+        };
+
+        Query<DummyModel> mockQuery = new Query<>(Arrays.stream(models).collect(Collectors.toList()));
+        Mockito.when(sjorm.getAll(DummyModel.class)).thenReturn(mockQuery);
+
+        // Act
+        Query<DummyModel> query = sjorm.getAll(DummyModel.class);
+
+        // Assert
+        assertEquals("cheese", query.first().getProperty("field1", String.class));
+        assertEquals("bread", query.last().getProperty("field1", String.class));
+    }
 }
