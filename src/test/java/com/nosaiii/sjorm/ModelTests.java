@@ -73,7 +73,7 @@ public class ModelTests {
 
     @Test
     public void getMetadata_WithUnregisteredModel_ShouldThrowModelMetadataNotRegisteredException() {
-        // Arange
+        // Arrange
         // ! Not required
 
         // Act
@@ -81,5 +81,25 @@ public class ModelTests {
 
         // Assert
         assertThrows(ModelMetadataNotRegisteredException.class, act);
+    }
+
+    @Test
+    public void newInstance_FromConstructorCall_ShouldReturnNewModel() {
+        // Arrange
+        AbstractModelMetadata modelMetadata = new ModelMetadata(DummyModel.class);
+
+        // Act
+        sjorm.registerModel(modelMetadata);
+        ThrowingRunnable act = DummyModel::new;
+
+        // Assert
+        try {
+            act.run();
+            assertTrue(true);
+        } catch(ModelMetadataNotRegisteredException exception) {
+            fail();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 }
