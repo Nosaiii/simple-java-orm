@@ -273,6 +273,13 @@ As you can see, you can directly get a collection of its related models from bot
 
 ---
 
+## Tests
+Tests are being executed with usage of [JUnit 4](https://junit.org/junit4/). Run the tests of SJORM by running the gradle testing script. The tests of SJORM are located under the _com.nosaiii.sjorm_ package within the _test_ folder in the project's source.
+
+For contributing to the project, all tests must pass and tests have to be added that correspond to the modified code of a branch being pulled to the _develop_ (and _main_) branch. If not, the pull request of the branch will not be approved for merging.
+
+---
+
 ## Authors
 
 * **Jason van der Lee** - *Head developer* - [Nosaiii](https://github.com/Nosaiii)
