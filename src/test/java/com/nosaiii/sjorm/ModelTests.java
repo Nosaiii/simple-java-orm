@@ -5,7 +5,8 @@ import static org.junit.Assert.*;
 import com.nosaiii.sjorm.exceptions.ModelMetadataNotRegisteredException;
 import com.nosaiii.sjorm.metadata.AbstractModelMetadata;
 import com.nosaiii.sjorm.metadata.ModelMetadata;
-import com.nosaiii.sjorm.models.DummyModel;
+import com.nosaiii.sjorm.models.DummyModelPrimary;
+import com.nosaiii.sjorm.models.DummyModelSecondary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -15,6 +16,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 @RunWith(PowerMockRunner.class)
@@ -45,29 +48,29 @@ public class ModelTests {
     @Test
     public void registerModel_WithValidModel_ShouldRegisterModelMetadata() {
         // Arrange
-        AbstractModelMetadata modelMetadata = new ModelMetadata(DummyModel.class);
+        AbstractModelMetadata modelMetadata = new ModelMetadata(DummyModelPrimary.class);
 
         // Act
         sjorm.registerModel(modelMetadata);
 
         // Assert
-        assertTrue(sjorm.getMetadatas().containsKey(DummyModel.class));
-        assertNotNull(sjorm.getMetadata(DummyModel.class));
+        assertTrue(sjorm.getMetadatas().containsKey(DummyModelPrimary.class));
+        assertNotNull(sjorm.getMetadata(DummyModelPrimary.class));
     }
 
     @Test
     public void getMetadata_WithRegisteredModel_ShouldReturnValidModelMetadata() {
         // Arrange
-        AbstractModelMetadata registeredModelMetadata = new ModelMetadata(DummyModel.class);
+        AbstractModelMetadata registeredModelMetadata = new ModelMetadata(DummyModelPrimary.class);
 
         // Act
         sjorm.registerModel(registeredModelMetadata);
-        AbstractModelMetadata retrievedModelMetadata = sjorm.getMetadata(DummyModel.class);
+        AbstractModelMetadata retrievedModelMetadata = sjorm.getMetadata(DummyModelPrimary.class);
 
         // Assert
         assertNotNull(retrievedModelMetadata);
-        assertEquals(retrievedModelMetadata.getType(), DummyModel.class);
-        assertEquals("dummy", retrievedModelMetadata.getTable());
+        assertEquals(retrievedModelMetadata.getType(), DummyModelPrimary.class);
+        assertEquals("dummy_primary", retrievedModelMetadata.getTable());
         assertArrayEquals(new String[] { "id" }, retrievedModelMetadata.getPrimaryKeyFields());
     }
 
@@ -77,7 +80,7 @@ public class ModelTests {
         // ! Not required
 
         // Act
-        ThrowingRunnable act = () -> sjorm.getMetadata(DummyModel.class);
+        ThrowingRunnable act = () -> sjorm.getMetadata(DummyModelPrimary.class);
 
         // Assert
         assertThrows(ModelMetadataNotRegisteredException.class, act);
@@ -86,11 +89,11 @@ public class ModelTests {
     @Test
     public void newInstance_FromConstructorCall_ShouldReturnNewModel() {
         // Arrange
-        AbstractModelMetadata modelMetadata = new ModelMetadata(DummyModel.class);
+        AbstractModelMetadata modelMetadata = new ModelMetadata(DummyModelPrimary.class);
 
         // Act
         sjorm.registerModel(modelMetadata);
-        ThrowingRunnable act = DummyModel::new;
+        ThrowingRunnable act = DummyModelPrimary::new;
 
         // Assert
         try {
@@ -101,5 +104,32 @@ public class ModelTests {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+    }
+
+    @Test
+    public void hasMany_FromValidModel_ShouldReturnManyAssociatedModels() {
+        // Arrange
+        AbstractModelMetadata primaryModelMetadata = new ModelMetadata(DummyModelPrimary.class);
+        AbstractModelMetadata secondaryModelMetadata = new ModelMetadata(DummyModelSecondary.class);
+
+        sjorm.registerModel(primaryModelMetadata);
+        sjorm.registerModel(secondaryModelMetadata);
+
+        DummyModelPrimary dummyModelPrimary = Mockito.mock(DummyModelPrimary.class);
+        Query<DummyModelSecondary> secondariesMock = new Query<>(new ArrayList<>(Arrays.asList(
+                new DummyModelSecondary(),
+                new DummyModelSecondary(),
+                new DummyModelSecondary()
+        )));
+        Mockito.when(dummyModelPrimary.getSecondaries()).thenReturn(secondariesMock);
+
+        // Act
+        sjorm.registerModel(primaryModelMetadata);
+        sjorm.registerModel(secondaryModelMetadata);
+        Query<DummyModelSecondary> secondaries = dummyModelPrimary.getSecondaries();
+
+        // Assert
+        assertNotNull(secondaries);
+        assertEquals(3, secondaries.count());
     }
 }

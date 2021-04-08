@@ -5,13 +5,13 @@ import com.nosaiii.sjorm.annotations.SJORMTable;
 
 import java.sql.ResultSet;
 
-@SJORMTable(tableName = "dummy")
-public class DummyModel extends Model {
-    public DummyModel(ResultSet rs) {
+@SJORMTable(tableName = "dummy_secondary")
+public class DummyModelSecondary extends Model {
+    public DummyModelSecondary(ResultSet rs) {
         super(rs);
     }
 
-    public DummyModel() {
+    public DummyModelSecondary() {
         super();
     }
 }

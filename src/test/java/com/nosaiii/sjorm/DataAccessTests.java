@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import com.nosaiii.sjorm.metadata.AbstractModelMetadata;
 import com.nosaiii.sjorm.metadata.ModelMetadata;
-import com.nosaiii.sjorm.models.DummyModel;
+import com.nosaiii.sjorm.models.DummyModelPrimary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,26 +35,26 @@ public class DataAccessTests {
         PowerMockito.when(SJORM.getInstance()).thenReturn(sjorm);
 
         HashMap<Class<? extends Model>, AbstractModelMetadata> metadatas = new HashMap<>();
-        metadatas.put(DummyModel.class, new ModelMetadata(DummyModel.class));
+        metadatas.put(DummyModelPrimary.class, new ModelMetadata(DummyModelPrimary.class));
         Mockito.when(sjorm.getMetadatas()).thenReturn(metadatas);
     }
 
     @Test
     public void getAll_WithValidEntries_ShouldReturnCorrectAmount() {
         // Arrange
-        DummyModel[] models = new DummyModel[] {
-                new DummyModel(),
-                new DummyModel(),
-                new DummyModel(),
-                new DummyModel(),
-                new DummyModel()
+        DummyModelPrimary[] models = new DummyModelPrimary[] {
+                new DummyModelPrimary(),
+                new DummyModelPrimary(),
+                new DummyModelPrimary(),
+                new DummyModelPrimary(),
+                new DummyModelPrimary()
         };
 
-        Query<DummyModel> mockQuery = new Query<>(Arrays.stream(models).collect(Collectors.toList()));
-        Mockito.when(sjorm.getAll(DummyModel.class)).thenReturn(mockQuery);
+        Query<DummyModelPrimary> mockQuery = new Query<>(Arrays.stream(models).collect(Collectors.toList()));
+        Mockito.when(sjorm.getAll(DummyModelPrimary.class)).thenReturn(mockQuery);
 
         // Act
-        Query<DummyModel> query = sjorm.getAll(DummyModel.class);
+        Query<DummyModelPrimary> query = sjorm.getAll(DummyModelPrimary.class);
 
         // Assert
         assertEquals(models.length, query.count());
@@ -63,23 +63,23 @@ public class DataAccessTests {
     @Test
     public void getAll_WithValidEntries_ShouldReturnCorrectPropertyValues() {
         // Arrange
-        DummyModel[] models = new DummyModel[] {
-                new DummyModel() {{
+        DummyModelPrimary[] models = new DummyModelPrimary[] {
+                new DummyModelPrimary() {{
                     setProperty("field1", "cheese");
                 }},
-                new DummyModel() {{
+                new DummyModelPrimary() {{
                     setProperty("field1", "apple");
                 }},
-                new DummyModel() {{
+                new DummyModelPrimary() {{
                     setProperty("field1", "bread");
                 }}
         };
 
-        Query<DummyModel> mockQuery = new Query<>(Arrays.stream(models).collect(Collectors.toList()));
-        Mockito.when(sjorm.getAll(DummyModel.class)).thenReturn(mockQuery);
+        Query<DummyModelPrimary> mockQuery = new Query<>(Arrays.stream(models).collect(Collectors.toList()));
+        Mockito.when(sjorm.getAll(DummyModelPrimary.class)).thenReturn(mockQuery);
 
         // Act
-        Query<DummyModel> query = sjorm.getAll(DummyModel.class);
+        Query<DummyModelPrimary> query = sjorm.getAll(DummyModelPrimary.class);
 
         // Assert
         assertEquals("cheese", query.first().getProperty("field1", String.class));
