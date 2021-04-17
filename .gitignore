@@ -119,8 +119,12 @@ dist/
 .idea/**/dbnavigator.xml
 
 # Gradle
+gradle/
+.gradle/
 .idea/**/gradle.xml
 .idea/**/libraries
+/gradlew
+/gradlew.bat
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
